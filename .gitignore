@@ -1,0 +1,9 @@
+# Editor backups
+*.sw[op]
+*~
+
+# Configuration
+/paths.mk
+
+# Compilation productions
+/build-uno/
