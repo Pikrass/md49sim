@@ -6,6 +6,8 @@
 
 #include "commands.h"
 
+#define VERSION 1
+
 template <typename Serial>
 class MD49 {
 public:
@@ -57,7 +59,7 @@ private:
 				serial.write(25);
 				break;
 			case MD49_CMD_GET_VERSION:
-				//TODO
+				serial.write(VERSION);
 				break;
 			case MD49_CMD_GET_ACCELERATION:
 				//TODO
