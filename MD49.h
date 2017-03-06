@@ -48,13 +48,13 @@ private:
 				//TODO
 				break;
 			case MD49_CMD_GET_VOLTS:
-				//TODO
+				serial.write(24);
 				break;
 			case MD49_CMD_GET_CURRENT_1:
-				//TODO
+				serial.write(25);
 				break;
 			case MD49_CMD_GET_CURRENT_2:
-				//TODO
+				serial.write(25);
 				break;
 			case MD49_CMD_GET_VERSION:
 				//TODO
@@ -66,10 +66,12 @@ private:
 				//TODO
 				break;
 			case MD49_CMD_GET_VI:
-				//TODO
+				serial.write(25);
+				serial.write(10);
+				serial.write(10);
 				break;
 			case MD49_CMD_GET_ERROR:
-				//TODO
+				serial.write(0);
 				break;
 			case MD49_CMD_SET_SPEED_1:
 				//TODO
