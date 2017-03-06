@@ -93,10 +93,8 @@ private:
 				//TODO
 				break;
 			case MD49_CMD_DISABLE_REGULATOR:
-				//TODO
 				break;
 			case MD49_CMD_ENABLE_REGULATOR:
-				//TODO
 				break;
 			case MD49_CMD_DISABLE_TIMEOUT:
 				//TODO
