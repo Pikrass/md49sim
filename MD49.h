@@ -29,16 +29,18 @@ public:
 private:
 	Serial &serial;
 
+	int8_t requested_speeds[2];
+
 	void handle_command(void)
 	{
 		uint8_t command = serial.read();
 
 		switch(command) {
 			case MD49_CMD_GET_SPEED_1:
-				//TODO
+				serial.write(requested_speeds[0]);
 				break;
 			case MD49_CMD_GET_SPEED_2:
-				//TODO
+				serial.write(requested_speeds[1]);
 				break;
 			case MD49_CMD_GET_ENCODER_1:
 				//TODO
@@ -76,10 +78,10 @@ private:
 				serial.write(0);
 				break;
 			case MD49_CMD_SET_SPEED_1:
-				//TODO
+				requested_speeds[0] = serial.read();
 				break;
 			case MD49_CMD_SET_SPEED_2:
-				//TODO
+				requested_speeds[1] = serial.read();
 				break;
 			case MD49_CMD_SET_ACCELERATION:
 				//TODO
