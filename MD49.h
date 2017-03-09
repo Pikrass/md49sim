@@ -12,7 +12,7 @@ template <typename Serial>
 class MD49 {
 public:
 	MD49(Serial &p_serial)
-		: serial(p_serial)
+		: serial(p_serial), accel(5)
 	{
 		serial.begin(9600);
 	}
@@ -30,6 +30,7 @@ private:
 	Serial &serial;
 
 	int8_t requested_speeds[2];
+	uint8_t accel;
 
 	void handle_command(void)
 	{
@@ -64,7 +65,7 @@ private:
 				serial.write(VERSION);
 				break;
 			case MD49_CMD_GET_ACCELERATION:
-				//TODO
+				serial.write(accel);
 				break;
 			case MD49_CMD_GET_MODE:
 				//TODO
@@ -84,7 +85,11 @@ private:
 				requested_speeds[1] = serial.read();
 				break;
 			case MD49_CMD_SET_ACCELERATION:
-				//TODO
+				accel = serial.read();
+				if (accel < 1)
+					accel = 1;
+				else if (accel > 10)
+					accel = 10;
 				break;
 			case MD49_CMD_SET_MODE:
 				//TODO
