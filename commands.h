@@ -1,6 +1,8 @@
 #ifndef MD49SIM_COMMANDS_H
 #define MD49SIM_COMMANDS_H
 
+#define MD49_SYNC                  0x00
+
 #define MD49_CMD_GET_SPEED_1       0x21
 #define MD49_CMD_GET_SPEED_2       0x22
 #define MD49_CMD_GET_ENCODER_1     0x23

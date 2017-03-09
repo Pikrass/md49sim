@@ -12,7 +12,7 @@ template <typename Serial>
 class MD49 {
 public:
 	MD49(Serial &p_serial)
-		: serial(p_serial), accel(5)
+		: serial(p_serial), awaiting_cmd(false), accel(5)
 	{
 		serial.begin(9600);
 	}
@@ -22,12 +22,22 @@ public:
 		// Update speeds based on acceleration
 		// Update encoders
 
-		while (serial.available())
+		while (serial.available()) {
+			if (!awaiting_cmd) {
+				if (serial.read() == MD49_SYNC)
+					awaiting_cmd = true;
+				continue;
+			}
+
 			handle_command();
+			awaiting_cmd = false;
+		}
 	}
 
 private:
 	Serial &serial;
+
+	bool awaiting_cmd;
 
 	int8_t requested_speeds[2];
 	uint8_t accel;
