@@ -41,6 +41,7 @@ private:
 
 	int8_t requested_speeds[2];
 	uint8_t accel;
+	int16_t encoders[2];
 
 	void handle_command(void)
 	{
@@ -54,13 +55,14 @@ private:
 				serial.write(requested_speeds[1]);
 				break;
 			case MD49_CMD_GET_ENCODER_1:
-				//TODO
+				send_encoder(0);
 				break;
 			case MD49_CMD_GET_ENCODER_2:
-				//TODO
+				send_encoder(1);
 				break;
 			case MD49_CMD_GET_ENCODERS:
-				//TODO
+				send_encoder(0);
+				send_encoder(1);
 				break;
 			case MD49_CMD_GET_VOLTS:
 				serial.write(24);
@@ -105,7 +107,8 @@ private:
 				//TODO
 				break;
 			case MD49_CMD_RESET_ENCODERS:
-				//TODO
+				encoders[0] = 0;
+				encoders[1] = 0;
 				break;
 			case MD49_CMD_DISABLE_REGULATOR:
 				break;
@@ -119,6 +122,26 @@ private:
 				break;
 			default:
 				break;
+		}
+	}
+
+	void send_encoder(int i)
+	{
+		/* Encoders are 32 bits according to documentation, but 16 bits
+		 * according to reality
+		 */
+
+		if (encoders[i] >= 0) {
+			serial.write(0x00);
+			serial.write(0x00);
+		} else {
+			serial.write(0xff);
+			serial.write(0xff);
+		}
+
+		for (int b = 1 ; b >= 0 ; --b) {
+			int8_t byte = encoders[i] >> 8*b;
+			serial.write(byte);
 		}
 	}
 };
