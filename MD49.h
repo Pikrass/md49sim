@@ -12,7 +12,8 @@ template <typename Serial>
 class MD49 {
 public:
 	MD49(Serial &p_serial)
-		: serial(p_serial), awaiting_cmd(false), accel(5), timeout(true)
+		: serial(p_serial), awaiting_cmd(false),
+		mode(MODE0), accel(5), timeout(true)
 	{
 		serial.begin(9600);
 	}
@@ -36,10 +37,18 @@ public:
 	}
 
 private:
+	enum Mode {
+		MODE0, // 0 to 255
+		MODE1, // -128 to 127
+		MODE2, // 0 to 255, speed2 is turn value
+		MODE3 // -128 to 127, speed2 is turn value
+	};
+
 	Serial &serial;
 
 	bool awaiting_cmd;
 
+	Mode mode;
 	int8_t requested_speeds[2];
 	uint8_t accel;
 	int16_t encoders[2];
@@ -83,7 +92,7 @@ private:
 				serial.write(accel);
 				break;
 			case MD49_CMD_GET_MODE:
-				//TODO
+				serial.write(mode);
 				break;
 			case MD49_CMD_GET_VI:
 				serial.write(25);
@@ -107,6 +116,7 @@ private:
 					accel = 10;
 				break;
 			case MD49_CMD_SET_MODE:
+				//TODO: convert values (?)
 				//TODO
 				break;
 			case MD49_CMD_RESET_ENCODERS:
@@ -145,6 +155,27 @@ private:
 		for (int b = 1 ; b >= 0 ; --b) {
 			int8_t byte = encoders[i] >> 8*b;
 			serial.write(byte);
+		}
+	}
+
+	int get_requested_speed(int i)
+	{
+		int turn;
+
+		switch (mode) {
+		case MODE0:
+			return (int)(uint8_t)(requested_speeds[i]) - 128;
+		case MODE1:
+			return requested_speeds[i];
+		case MODE2:
+			//TODO: overflow with turn value?
+			// "If the either motor is not able to achieve the
+			// required speed for the turn (beyond the maximum
+			// output), then the other motor is automatically
+			// changed by the program to meet the required
+			// difference."
+		case MODE3:
+			//TODO: overflow with turn value?
 		}
 	}
 };
