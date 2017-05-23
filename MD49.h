@@ -12,7 +12,7 @@ template <typename Serial>
 class MD49 {
 public:
 	MD49(Serial &p_serial)
-		: serial(p_serial), awaiting_cmd(false), accel(5)
+		: serial(p_serial), awaiting_cmd(false), accel(5), timeout(true)
 	{
 		serial.begin(9600);
 	}
@@ -29,6 +29,7 @@ public:
 				continue;
 			}
 
+			last_comm = millis();
 			handle_command();
 			awaiting_cmd = false;
 		}
@@ -42,6 +43,8 @@ private:
 	int8_t requested_speeds[2];
 	uint8_t accel;
 	int16_t encoders[2];
+	bool timeout;
+	unsigned long last_comm;
 
 	void handle_command(void)
 	{
@@ -115,10 +118,10 @@ private:
 			case MD49_CMD_ENABLE_REGULATOR:
 				break;
 			case MD49_CMD_DISABLE_TIMEOUT:
-				//TODO
+				timeout = false;
 				break;
 			case MD49_CMD_ENABLE_TIMEOUT:
-				//TODO
+				timeout = true;
 				break;
 			default:
 				break;
